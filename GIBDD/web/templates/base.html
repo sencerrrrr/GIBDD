@@ -2,10 +2,14 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>GIBDD</title>
 </head>
 <body>
-{% extends 'base.html' %}
+<header>
+    <nav>
+        <a href="{% url 'index' %}">Главная</a>
+    </nav>
+</header>
 {% block header %}
 {% endblock header %}
 {% block content %}
