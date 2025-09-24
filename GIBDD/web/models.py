@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 
-
 class Role(models.Model):
     name = models.CharField(
         max_length=30,
@@ -22,6 +21,7 @@ class Role(models.Model):
     def __str__(self):
         return self.name
 
+
 class User(models.Model):
     firstname = models.CharField(
         max_length=100,
@@ -33,12 +33,16 @@ class User(models.Model):
         help_text='Введите имя',
         verbose_name='Имя',
     )
-    fathername = models.CharField(
+    fatherName = models.CharField(
         max_length=100,
         help_text='Введите отчество',
         verbose_name='Отчество',
         blank=True,
         null=True,
+    )
+    dateOfBirth = models.DateField(
+        help_text='Введите дату рождения',
+        verbose_name='Дата рождения',
     )
     role = models.ForeignKey(
         Role,
@@ -46,10 +50,12 @@ class User(models.Model):
     )
 
     def __str__(self):
-        return ' '.join(filter(None, [self.firstname, self.name, self.fathername]))
+        return f' {self.firstname} {self.name} {self.fatherName}'
 
 
 VALID_LETTERS = 'АВЕКМНОРСТУХ'
+
+
 class Region(models.Model):
     name = models.CharField(
         max_length=100,
@@ -61,8 +67,10 @@ class Region(models.Model):
         help_text='Введите номер региона',
         verbose_name='Номер региона',
     )
+
     def __str__(self):
-        return ' '.join(filter(None, [self.name, self.number]))
+        return f'{self.name} {self.number}'
+
 
 class CarNumber(models.Model):
     number = models.CharField(
@@ -100,3 +108,87 @@ class CarNumber(models.Model):
             raise ValidationError(f'Номер {self.number} не соответсвует формату для региона {self.region.number}')
 
 
+class CarBrand(models.Model):
+    name = models.CharField(
+        max_length=30,
+        help_text='Введите марку автомобиля',
+        verbose_name='Марка автомобиля',
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class CarModel(models.Model):
+    name = models.CharField(
+        max_length=50,
+        help_text='Введите модель автомобиля',
+        verbose_name='Модель автомобиля'
+    )
+    brand = models.ForeignKey(
+        CarBrand,
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return f' {self.brand} {self.name}'
+
+
+class Car(models.Model):
+    brand = models.ForeignKey(
+        CarBrand,
+        on_delete=models.CASCADE,
+    )
+    model = models.ForeignKey(
+        CarModel,
+        on_delete=models.CASCADE,
+    )
+    number = models.ForeignKey(
+        CarNumber,
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return f'{self.brand} {self.model} {self.number}'
+
+
+class ContactHistory(models.Model):
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='contact_histories_as_owner'
+    )
+    buyer = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='contact_histories_as_buyer'
+    )
+    car = models.ForeignKey(
+        Car,
+        on_delete=models.CASCADE,
+    )
+    contract = models.FileField(
+        upload_to='contract/',
+        help_text='Загрузите договор о куплепродажи',
+        verbose_name='Договор о куплепродажи',
+        null= True,
+        blank= True,
+    )
+
+    def __str__(self):
+        return f'{self.owner} {self.buyer} {self.car}'
+
+
+class CarOwner(models.Model):
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    car = models.ForeignKey(
+        Car,
+        on_delete=models.CASCADE,
+        unique=True,
+    )
+
+    def __str__(self):
+        return f' {self.owner} {self.car}'
