@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Список автомобилей</h2>
+<ul>
+    {% for car in cars %}
+        <li>{{ car.uniq_number }} - {{ car.brand }} {{ car.model }} - Номер: {{ car.number.number }} - Владелец: {{ car.Owner }}</li>
+    {% empty %}
+        <li>Автомобили не найдены</li>
+    {% endfor %}
+</ul>
+{% endblock content %}

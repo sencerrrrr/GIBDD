@@ -135,6 +135,9 @@ class CarModel(models.Model):
 
 
 class Car(models.Model):
+    uniq_number = models.CharField(
+        max_length=17,
+    )
     brand = models.ForeignKey(
         CarBrand,
         on_delete=models.CASCADE,
@@ -147,12 +150,21 @@ class Car(models.Model):
         CarNumber,
         on_delete=models.CASCADE,
     )
+    Owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
-        return f'{self.brand} {self.model} {self.number}'
+        return f'{self.uniq_number} {self.brand} {self.model}'
 
 
 class ContactHistory(models.Model):
+    uniq_number = models.CharField(
+        max_length=5,
+    )
     owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -177,18 +189,3 @@ class ContactHistory(models.Model):
 
     def __str__(self):
         return f'{self.owner} {self.buyer} {self.car}'
-
-
-class CarOwner(models.Model):
-    owner = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-    )
-    car = models.ForeignKey(
-        Car,
-        on_delete=models.CASCADE,
-        unique=True,
-    )
-
-    def __str__(self):
-        return f' {self.owner} {self.car}'

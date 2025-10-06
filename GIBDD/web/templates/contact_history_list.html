@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>История контактов купли-продажи</h2>
+<ul>
+    {% for history in histories %}
+    <li>{{ history.owner }} -> {{ history.buyer }} : {{ history.car }}
+        {% if history.contract %}
+        <a href="{{ history.contract.url }}">Договор</a>
+        {% else %}
+        Нет файла
+        {% endif %}
+    </li>
+
+    {% endfor %}
+</ul>
+{% endblock content %}

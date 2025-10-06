@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Пользователи системы</h1>
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Дата рождения</th>
+            <th>Роль</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.firstname }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.fatherName|default:"-" }}</td>
+            <td>{{ user.dateOfBirth }}</td>
+            <td>{{ user.role.name }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">Пользователи не найдены</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}
